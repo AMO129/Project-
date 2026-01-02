@@ -1,122 +1,127 @@
-use std::io;  // using standard input/output 
+use std::io::Write;
 
-//funtion for input
 fn input() -> String {
     let mut input1 = String::new();
-    io::stdin().read_line(&mut input1).expect("Not a valid input");
+    std::io::stdin().read_line(&mut input1).expect("Not a valid input");
     let input1: String = input1.trim().to_string().to_lowercase();  
-    input1    //retun the function value
+    input1    
 }
 
 fn main() {
-     
-     // VECTOR FOR STORING DATA
     let mut student_list: Vec<String> = Vec::new();
 
-    println!("--- Welcome to student Information Management System ---");  //printing welcoming message
-    
+    let record_to_save = student_list.join("\n");
 
-    
+    println!("\n--- SIMS is now online😁 ---");
+
+
+    'student_loop: loop {
         println!("\n ---- Enter New Student's Details ----");
 
-        println!("Enter your ID:");
-        let id: u8 = input().parse().expect("Error, re-check it");
 
-        println!("Enter your name:");  //name 
-        let name:String = input(); 
+        /*println!("\n Before then please note that you can exit this program at any point by typing stop.
+            \nPress Enter key on your keyboard to confirm you understand that or continue");
 
-    
-        println!("Enter your Department:"); //department 
-        let department : String = input().parse().expect("Error, re-check it");
+        if input() == "stop"{
+            println!("You have prompted to stop the program
+                \n Do you really want to exit the program? (y to stop & n to continue)");
+            if input() != "y"{
+                continue;
+            }
+        }*/
 
-    
-    loop{
-        println!("Enter your course code:"); //department 
-        let cousre_code : String = input().parse().expect("Error, re-check it");
+        println!("Enter your Matriculation Number:");
+        let id: String = input();
 
+        println!("Enter your name:");
+        let name: String = input(); 
 
-        println!("Enter your First test score:");  //first course
-        let f_score: f32 = input().parse().expect("Error, re-check it");
+        println!("Enter your Department:");
+        let department: String = input(); // Fixed: parse() removed as Dept is a String
 
-        println!("Enter your Second test score:");  //seceond course
-        let s_score: f32 = input().parse().expect("Error, re-check it");
+         // CONFIRMING USER INPUTS
+            println!("\nYou entered:
+                Name: {}\n
+                Matriculation Number: {}\n
+                Department: {}",
+                name, id, department);
+            
+            println!("\nAre those your correct details? (y to save & n to discard):");
+            if input() != "y" {
+                println!("Entry discarded, try those course details again.");
+                continue 'student_loop; 
+            }
 
-        println!("Enter your participation mark:");  //participation mark
-        let p_mark: f32 = input().parse().expect("Error, re-check it");
+        'course_loop: loop {
+            println!("\n{}'s details (Matriculation Number: {})", name, id);
+            println!("Enter your course code:");
+            let course_code: String = input();
 
-        println!("Enter your exam score:");  //third course 
-        let exam: f32 = input().parse().expect("Error, re-check it");
+            println!("Enter your First test score:");
+            let f_score: f32 = input().parse().expect("Error, re-check it");
 
-        // CONFIRMING USER INPUTS
-        println!("\nYou entered: {} ID: {}", name, id);
-        println!("Is this correct? (y to save & n to discard):");
+            println!("Enter your Second test score:");
+            let s_score: f32 = input().parse().expect("Error, re-check it");
 
-        let confirm = input().to_lowercase();
+            println!("Enter your participation mark:");
+            let p_mark: f32 = input().parse().expect("Error, re-check it");
 
-        if confirm == "y"{
+            println!("Enter your exam score:");
+            let exam: f32 = input().parse().expect("Error, re-check it");
+
+            // CONFIRMING USER INPUTS
+            println!("\nYou entered:
+                Course code: {}\n
+                First test scores: {}\n
+                Second test score: {}\n
+                participation mark: {}\n
+                Exam score: {}", 
+                course_code, f_score, s_score, p_mark, exam);
+            
+            println!("\nAre those your correct details? (y to save & n to discard):");
+            if input() != "y" {
+                println!("Entry discarded, try those course details again.");
+                continue 'course_loop; 
+            }
+
             student_list.push(name.clone());
-            println!("Student saved.");
-        } else {
-            println!("Entry discarded");
-            continue;
-        }
+            println!("Student data recorded.");
 
-       
+            let total = f_score + s_score + p_mark + exam;
+            let grade = if total <= 100.0 && total >= 70.0 { "A" } 
+                        else if total <= 69.0 && total >= 60.0 { "B" } 
+                        else if total <= 59.9 && total >= 50.0 { "C" } 
+                        else if total <= 49.9 && total >= 45.0 { "D" } 
+                        else if total <=44.9 && total >= 0.0 { "F" }
+                        else {"total score is out of scope"};
 
-    
-         // SUMMING STUDENT'S SCORES 
-        let total = f_score + s_score + p_mark + exam;
+            // ASKING FOR MORE RECORDS
+            println!("\nDo you want to enter another course's records for this student? (y/n)");
+            if input() == "y" {
+                continue 'course_loop; // Restarts at Course Code
+            } else {
 
-         // CONDITIONAL STATEMENT FOR GRADING
-        let grade = if total <= 100.0 && total >= 70.0{
-            "A"
-        } else if total <= 69.9 && total >= 60.0 {
-            "B"
-        } else if total <= 59.9 && total >= 50.0 {
-            "C"
-        } else if total <= 45.9 && total >= 45.0 {
-            "D"
-        } else {
-            "F"
-        };
+                println!("
+                    Final Grade for {}: is '{}'\n 
+                    (Total: {})\n", 
+                    course_code, grade, total);
 
-    
-       
+                if grade == "A" { println!("'A' na water😂\n"); } 
+                else { println!("No fear.\n"); }
 
-   
-    //printing the details 
-    println!("
-        ID: {}\n 
-        Name: {}\n
-        Department: {}\n
-        Course: {}\n
-        First test score: {}\n
-        Second test score: {}\n
-        Participation mark: {}\n
-        Exam score: {}\n
-        Your total score is: {}\n
-        Your final grade is: {}",
-        id, name, department, cousre_code, f_score, 
-        s_score, p_mark, exam, total, grade);
+                println!("\nDo you want to enter a different student's records? (y/n)");
+                if input() == "y" {
+                    continue 'student_loop; // Restarts at ID/Name
+                } else {
+                    println!("We have come to the end, your data has been updated on the database😁");
+                    break 'student_loop; // Kills the program
+                }
+            }
 
-     if grade == "A" {
-        println!("
-            'A' na water😂\n")
-    } else {
-        println!("
-            No fear.\n")
-    }
+        } // End of course_loop
+    } // End of student_loop
 
-     // ASKING FOR OTHER STUDENTS DETAILS
-
-        println!("Do you want to continue? (yes/no)");
-
-        let cont = input().to_lowercase();
-
-        if cont =="no"{
-            break;
-        }
-
-  }
-    
+    let mut file = std::fs::File::create("SIMS.csv").expect("failed to create");
+    file.write_all(record_to_save.as_bytes()).expect("failed to write");
+    println!("\nRecords saved successfully");
 }
